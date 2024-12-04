@@ -1,0 +1,13 @@
+{
+  "name": "kvbackup",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Glynn Bird <glynn.bird@gmail.com>",
+  "license": "Apache-2.0",
+  "description": "Cloudflare KV backup",
+  "dependencies": {
+  }
+}
