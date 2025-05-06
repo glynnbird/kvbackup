@@ -35,6 +35,32 @@ const getKey = async (id) => {
   return j
 }
 
+// get a list of single keys value
+const getKeys = async (ids) => {
+  // curl -H"Authorization: Bearer $CF_AUTH_TOKEN" "$CF_API_URL/$CF_ACCOUNT_ID/storage/kv/namespaces/$CF_NAMESPACE_ID/values/$ID"
+  const url = `${CF_API_URL}/${CF_ACCOUNT_ID}/storage/kv/namespaces/${CF_NAMESPACE_ID}/bulk/get`
+  const response = await fetch(url, {
+    method: 'post',
+    body: JSON.stringify({ keys: ids, withMetadata: true, type: 'json' }),
+    headers: {
+      'Content-type': 'application/json',
+      Authorization: `Bearer ${CF_AUTH_TOKEN}`
+    }
+  })
+  const j = await response.json()
+  let retval = ''
+  
+  // return a list of JSON, one key/value per line
+  for(let k of Object.keys(j.result.values)) {
+    retval += JSON.stringify({
+      id: k,
+      metadata: j.result.values[k].metadata,
+      doc: j.result.values[k].value
+    }) + '\n'
+  }
+  return retval
+}
+
 // entry point
 const main = async () => {
   // get a list of up to 1000 keys in this namespace
@@ -42,23 +68,20 @@ const main = async () => {
   const numKeys = keys.length
   let count = 0
 
-  // // loop through all the keys
-  for (const key of keys) {
+  // get batches of 100 keys
+  do {
+    // get the first batch of keys
+    const keyBatch = keys.splice(0, Math.min(100, keys.length)).map((k) => { return k.name })
 
-    // fetch each key to get its value
-    const obj = {
-      id: key.name,
-      metadata: key.metadata
-    }
-    obj.doc = await getKey(key.name)
+    // fetch the keys listed in keyBatch
+    const res = await getKeys(keyBatch)
+    console.log(res)
 
-    // output
-    console.log(JSON.stringify(obj))
-
-    // progress meter
-    count++
+    // status
+    count += keyBatch.length
     process.stderr.write(`  ${count}/${numKeys}      \r`)
-  }
+
+  } while(keys.length > 0)
 
   // all done
   console.error('Backed up', numKeys, 'KV values')

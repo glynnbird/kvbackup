@@ -8,7 +8,6 @@ Limitations:
 
 - only 1000 keys are backed up.
 - it is assumed that metadata and KV values are JSON.
-- it is slow as each KV value is fetched one at a time.
 
 ## Running
 
