@@ -1,3 +1,4 @@
 backup.sh
+restore.sh
 node_modules
 *.jsonl

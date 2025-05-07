@@ -41,7 +41,7 @@ const getKeys = async (ids) => {
   const url = `${CF_API_URL}/${CF_ACCOUNT_ID}/storage/kv/namespaces/${CF_NAMESPACE_ID}/bulk/get`
   const response = await fetch(url, {
     method: 'post',
-    body: JSON.stringify({ keys: ids, withMetadata: true, type: 'json' }),
+    body: JSON.stringify({ keys: ids, withMetadata: true }),
     headers: {
       'Content-type': 'application/json',
       Authorization: `Bearer ${CF_AUTH_TOKEN}`
@@ -53,9 +53,9 @@ const getKeys = async (ids) => {
   // return a list of JSON, one key/value per line
   for(let k of Object.keys(j.result.values)) {
     retval += JSON.stringify({
-      id: k,
+      key: k,
       metadata: j.result.values[k].metadata,
-      doc: j.result.values[k].value
+      value: j.result.values[k].value
     }) + '\n'
   }
   return retval
