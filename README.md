@@ -1,9 +1,9 @@
 # kvbackup
 
-A simple utility to backup and restore KV metadata and values from Cloudflare's KV service.
+A simple command-line utility and library to backup and restore KV metadata and values from Cloudflare's KV service.
 
-- backup - It fetches all the keys in batches of 1000, then fetches each key's value/metadata in batches of 100.
-- restore - writes key/value/metadata back to KV in batches of 100.
+- `kvbackup` - It fetches all the keys in batches of 1000, then fetches each key's value/metadata in batches of 100.
+- `kvrestore` - writes key/value/metadata back to KV in batches of 100.
 
 ## Installation
 
@@ -65,7 +65,8 @@ import { backup } from 'kvbackup'
 const opts = {
   namespace: 'mynamespace',
   account: 'abc123',
-  token: 'xyz'
+  token: 'xyz',
+  ws: creatWriteStream('./mybackup.jsonl'),
 }
 await backup(opts)
 ```
@@ -77,7 +78,7 @@ await backup(opts)
 import { restore } from 'kvbackup'
 
 const opts = {
-  rs: creatReadStream('./mybackup.jsonl'),
+  rs: creatReadStream('./mybackup.jsonl', { encoding: 'utf8' }),
   namespace: 'mynamespace',
   account: 'abc123',
   token: 'xyz'
