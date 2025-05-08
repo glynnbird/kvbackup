@@ -2,38 +2,55 @@
 
 A simple utility to backup and restore KV metadata and values from Cloudflare's KV service.
 
-It fetches up to 1000 keys from the specified KV namespace and fetches each key in turn.
+- backup - It fetches all the keys in batches of 1000, then fetches each key's value/metadata in batches of 100.
+- restore - writes key/value/metadata back to KV in batches of 100.
 
-Limitations:
+## Installation
 
-- only 1000 keys are backed up.
-
-## Backup
-
-Clone this repo. Set some environment variables:
+Install using npm or your favourite package manager:
 
 ```sh
+npm install -g kvbackup
+```
+
+## Performing a backup
+
+Set some environment variables:
+
+```sh
+# some environment variables with the auth token and Cloudflare account id
+# to work with. We can pass CLOUDFLARE_NAMESPACE_ID here too, but we can
+# mix and match environment variables with CLI params
 export CLOUDFLARE_AUTH_TOKEN="MY_TOKEN"
 export CLOUDFLARE_ACCOUNT_ID="MY_ACCOUNT_ID"
-export CLOUDFLARE_NAMESPACE_ID="MY_NAMESPACE_ID"
+```
+
+Then run a backup for a single KV namespace:
+
+```sh
 # backup this namespace to a file
-node backup.mjs > mybackup.jsonl
+kvbackup --namespace abc123 > mybackup.jsonl
 ```
 
 ## Restore
 
-Restore is the opposite: pipe your backed-up file into `restore.mjs`:
+Restore is the opposite: pipe your backed-up file into `kvrestore`:
 
 ```sh
-export CLOUDFLARE_NAMESPACE_ID="MY_NAMESPACE_ID"
-cat mybackup.jsonl | node restore.mjs
+cat mybackup.jsonl | kvrestore --namespace def456
 ```
 
-## Output of backup file
+## Format of the backup file
 
-One line per KV entry:
+One line per KV entry, each line containing a `key`, the `metadata` object an the `value` string:
 
 ```js
 {"key":"mykey1","metadata":{"x":1},"value":"{\"y\":42}"}
 {"key":"mykey2","metadata":{"x":2},"value":"{\"y\":43}"}
 ```
+
+## Environment variables (and CLI parameters):
+
+- `CLOUDFLARE_AUTH_TOKEN` (`--token/-t`) - set up an auth token in https://dash.cloudflare.com/profile/api-tokens. It must have permissions to "edit KV Workers Storage".
+- `CLOUDFLARE_ACCOUNT_ID` (`--account/-a`) - the id of the Cloudflare account we are working with. This can be found in your browser's URL bar when visiting: https://dash.cloudflare.com
+- `CLOUDFLARE_NAMESPACE_ID` (`--namespace/-n`) - the id of the KV Namespace to backup or restore. 
