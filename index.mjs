@@ -5,17 +5,19 @@ import { listAllKeys, getKeys } from "./api.mjs"
 
 // restore a kv namespace
 export async function restore (opts) {
+  const rs = opts.rs || process.stdin
+  const ws = opts.ws || process.stdout
   // pour data from stdin
   // - break it into individual lines
   // - batch in to arrays of 100 objects
   // - write each batch to the KV bulk write API
   // - status messages to stdout
   await pipeline(
-    process.stdin,
+    rs,
     liner(),
     batcher(),
     apiWriter(opts),
-    process.stdout)
+    ws)
 }
 
 // backup a kv namespace
@@ -24,6 +26,7 @@ export async function backup (opts) {
   const keys = await listAllKeys(opts)
   const numKeys = keys.length
   let count = 0
+  const ws = opts.ws || process.stdout
 
   // get batches of 100 keys
   do {
@@ -32,13 +35,16 @@ export async function backup (opts) {
 
     // fetch the keys listed in keyBatch
     const res = await getKeys(keyBatch, opts)
-    console.log(res)
+    ws.write(res)
 
     // status
     count += keyBatch.length
     process.stderr.write(`  KV  ${count}/${numKeys}      \r`)
 
   } while(keys.length > 0)
+
+  // flush the stream
+  ws.end()
 
   // all done
   console.error('Backed up', numKeys, 'KV values')

@@ -82,12 +82,12 @@ export function apiWriter(opts) {
               Authorization: `Bearer ${opts.token}`
             }
           }).then(function(res) {
-            console.log('HTTP response', res.status)
+            console.error('HTTP response', res.status)
             done()
           })
         }
       } catch (e) {
-        console.log(e)
+        console.error(e)
         done()
       }
     },

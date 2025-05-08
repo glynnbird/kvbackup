@@ -54,3 +54,33 @@ One line per KV entry, each line containing a `key`, the `metadata` object an th
 - `CLOUDFLARE_AUTH_TOKEN` (`--token/-t`) - set up an auth token in https://dash.cloudflare.com/profile/api-tokens. It must have permissions to "edit KV Workers Storage".
 - `CLOUDFLARE_ACCOUNT_ID` (`--account/-a`) - the id of the Cloudflare account we are working with. This can be found in your browser's URL bar when visiting: https://dash.cloudflare.com
 - `CLOUDFLARE_NAMESPACE_ID` (`--namespace/-n`) - the id of the KV Namespace to backup or restore. 
+
+## Using programmatically
+
+### backup
+
+```js
+import { backup } from 'kvbackup'
+
+const opts = {
+  namespace: 'mynamespace',
+  account: 'abc123',
+  token: 'xyz'
+}
+await backup(opts)
+```
+
+
+### restore
+
+```js
+import { restore } from 'kvbackup'
+
+const opts = {
+  rs: creatReadStream('./mybackup.jsonl'),
+  namespace: 'mynamespace',
+  account: 'abc123',
+  token: 'xyz'
+}
+await restore(opts)
+```
