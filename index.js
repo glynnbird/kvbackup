@@ -1,7 +1,7 @@
 
 import { pipeline } from 'node:stream/promises'
-import { liner, batcher, apiWriter } from './transformers.mjs'
-import { listAllKeys, getKeys } from "./api.mjs"
+import { liner, batcher, apiWriter } from './transformers.js'
+import { listAllKeys, getKeys } from "./api.js"
 
 // restore a kv namespace
 export async function restore (opts) {

@@ -1,6 +1,7 @@
 {
   "name": "kvbackup",
-  "version": "2.0.0",
+  "version": "3.0.0",
+  "type": "module",
   "main": "index.js",
   "author": "Glynn Bird <glynn.bird@gmail.com>",
   "license": "Apache-2.0",
@@ -8,7 +9,7 @@
   "dependencies": {
   },
   "bin": {
-    "kvbackup": "bin/kvbackup.bin.mjs",
-    "kvrestore": "bin/kvrestore.bin.mjs"
+    "kvbackup": "bin/kvbackup.bin.js",
+    "kvrestore": "bin/kvrestore.bin.js"
   }
 }

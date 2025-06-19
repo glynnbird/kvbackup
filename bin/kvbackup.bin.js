@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
 import { parseArgs } from 'node:util'
-import { backup } from '../index.mjs'
-import { readFile } from 'fs/promises';
+import path from 'node:path'
+import { readFileSync } from 'node:fs'
+import * as kvbackup from '../index.js'
 
 // load the npm package meta
-const app = JSON.parse(await readFile('./package.json'))
+const app = JSON.parse(readFileSync(path.join(import.meta.dirname, '..', 'package.json'), { encoding: 'utf8' }))
 
 // boilerplate syntax string
 const syntax = 
@@ -76,6 +77,6 @@ if (!values.account || !values.namespace || !values.token) {
 
 // start the snapshot
 const main = async () => {
-  await backup(values)
+  await kvbackup.backup(values)
 }
 main()
