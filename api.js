@@ -59,11 +59,15 @@ export async function getKeys(ids, opts) {
   
   // return a list of JSON, one key/value per line
   for(let k of Object.keys(j.result.values)) {
-    retval += JSON.stringify({
-      key: k,
-      metadata: j.result.values[k].metadata,
-      value: j.result.values[k].value
-    }) + '\n'
+    if (j.result.values[k]) {
+      retval += JSON.stringify({
+        key: k,
+        metadata: j.result.values[k].metadata,
+        value: j.result.values[k].value
+      }) + '\n'
+    } else {
+      console.error('Error detected on key', k)
+    }
   }
   return retval
 }
