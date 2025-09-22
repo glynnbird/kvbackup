@@ -1,6 +1,6 @@
 {
   "name": "kvbackup",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "type": "module",
   "main": "index.js",
   "author": "Glynn Bird <glynn.bird@gmail.com>",
@@ -11,5 +11,9 @@
   "bin": {
     "kvbackup": "bin/kvbackup.bin.js",
     "kvrestore": "bin/kvrestore.bin.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glynnbird/kvbackup.git"
   }
 }
